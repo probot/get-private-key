@@ -1,16 +1,14 @@
-# WORK IN PROGRESS [#1](https://github.com/probot/get-private-key/pull/1)
-
 # @probot/get-private-key
 
-> Get private key from a path, environment variables, or a `*.pem` file in the current working directory
+> Get private key from a file path, environment variables, or a `*.pem` file in the current working directory
 
 [![@latest](https://img.shields.io/npm/v/@probot/get-private-key.svg)](https://www.npmjs.com/package/@probot/get-private-key)
 [![Build Status](https://github.com/probot/get-private-key/workflows/Test/badge.svg)](https://github.com/probot/get-private-key/actions?query=workflow%3ATest)
 
 Finds a private key through various user-(un)specified methods. Order of precedence:
 
-1. Explicit path option
-2. `PRIVATE_KEY` environment variable or explicit `env.PRIVATE_KEY` option
+1. Explicit file path option
+2. `PRIVATE_KEY` environment variable or explicit `env.PRIVATE_KEY` option. The private key can optionally be base64 encoded.
 3. `PRIVATE_KEY_PATH` environment variable or explicit `env.PRIVATE_KEY_PATH` option
 4. Any file w/ `.pem` extension in current working dir
 
@@ -66,7 +64,7 @@ const probot = new Probot({
   <tbody align=left valign=top>
     <tr>
       <th>
-        <code>options.path</code>
+        <code>options.filepath</code>
       </th>
       <td>
         <code>string<code>
@@ -77,7 +75,7 @@ Pass a path to a `*.pem` file. A relative path will be resolved to the current w
 
 ```js
 const privateKey = getPrivateKey({
-  path: "private-key.pem",
+  filepath: "private-key.pem",
 });
 ```
 
@@ -92,7 +90,7 @@ const privateKey = getPrivateKey({
       </td>
       <td>
 
-Defaults to `process.cwd()`. Used to resolve the `path` option and used as folder to find `*.pem` files.
+Defaults to `process.cwd()`. Used to resolve the `filepath` option and used as folder to find `*.pem` files.
 
 ```js
 const privateKey = getPrivateKey({
