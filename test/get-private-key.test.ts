@@ -1,5 +1,6 @@
 jest.mock("fs");
 
+import { resolve } from "path";
 import fs from "fs";
 
 import { getPrivateKey } from "../src";
@@ -32,7 +33,10 @@ describe("getPrivateKey", () => {
     it("{ filepath } option", () => {
       const result = getPrivateKey({ filepath: "test.pem" });
       expect(readFileSync).toHaveBeenCalledTimes(1);
-      expect(readFileSync).toHaveBeenCalledWith("test.pem", "utf-8");
+      expect(readFileSync).toHaveBeenCalledWith(
+        resolve(process.cwd(), "test.pem"),
+        "utf-8"
+      );
       expect(result).toEqual("test.pem content");
     });
 
@@ -52,10 +56,15 @@ describe("getPrivateKey", () => {
         },
       });
       expect(existsSync).toHaveBeenCalledTimes(1);
-      expect(existsSync).toHaveBeenCalledWith("test.pem");
+      expect(existsSync).toHaveBeenCalledWith(
+        resolve(process.cwd(), "test.pem")
+      );
 
       expect(readFileSync).toHaveBeenCalledTimes(1);
-      expect(readFileSync).toHaveBeenCalledWith("test.pem", "utf-8");
+      expect(readFileSync).toHaveBeenCalledWith(
+        resolve(process.cwd(), "test.pem"),
+        "utf-8"
+      );
       expect(result).toEqual("test.pem content");
     });
 
@@ -65,7 +74,10 @@ describe("getPrivateKey", () => {
         env: { PRIVATE_KEY },
       });
       expect(readFileSync).toHaveBeenCalledTimes(1);
-      expect(readFileSync).toHaveBeenCalledWith("test.pem", "utf-8");
+      expect(readFileSync).toHaveBeenCalledWith(
+        resolve(process.cwd(), "test.pem"),
+        "utf-8"
+      );
       expect(result).toEqual("test.pem content");
     });
 
@@ -73,7 +85,10 @@ describe("getPrivateKey", () => {
       readdirSync.mockReturnValue(["test.pem"]);
       const result = getPrivateKey();
       expect(readFileSync).toHaveBeenCalledTimes(1);
-      expect(readFileSync).toHaveBeenCalledWith("test.pem", "utf-8");
+      expect(readFileSync).toHaveBeenCalledWith(
+        resolve(process.cwd(), "test.pem"),
+        "utf-8"
+      );
       expect(result).toEqual("test.pem content");
     });
 
@@ -82,6 +97,14 @@ describe("getPrivateKey", () => {
       expect(() => getPrivateKey()).toThrow(
         `[@probot/get-private-key] More than one file found: \"test1.pem, test2.pem\". Set { filepath } option or set one of the environment variables: PRIVATE_KEY, PRIVATE_KEY_PATH`
       );
+    });
+
+    it("{ cwd }", () => {
+      const result = getPrivateKey({
+        cwd: "/app/current",
+      });
+      expect(result).toEqual(null);
+      expect(readdirSync).toHaveBeenCalledWith("/app/current");
     });
   });
 
@@ -111,10 +134,15 @@ describe("getPrivateKey", () => {
       process.env.PRIVATE_KEY_PATH = "test.pem";
       const result = getPrivateKey();
       expect(existsSync).toHaveBeenCalledTimes(1);
-      expect(existsSync).toHaveBeenCalledWith("test.pem");
+      expect(existsSync).toHaveBeenCalledWith(
+        resolve(process.cwd(), "test.pem")
+      );
 
       expect(readFileSync).toHaveBeenCalledTimes(1);
-      expect(readFileSync).toHaveBeenCalledWith("test.pem", "utf-8");
+      expect(readFileSync).toHaveBeenCalledWith(
+        resolve(process.cwd(), "test.pem"),
+        "utf-8"
+      );
       expect(result).toEqual("test.pem content");
     });
 
