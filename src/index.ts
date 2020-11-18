@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import { existsSync, readdirSync, readFileSync } from "fs";
 
 import isBase64 from "is-base64";
@@ -11,14 +12,16 @@ type Options = {
     PRIVATE_KEY_PATH?: string;
     [key: string]: string | undefined;
   };
+  cwd?: string;
 };
 
 export function getPrivateKey(options: Options = {}): string | null {
-  if (options.filepath) {
-    return readFileSync(options.filepath, "utf-8");
-  }
-
   const env = options.env || process.env;
+  const cwd = options.cwd || process.cwd();
+
+  if (options.filepath) {
+    return readFileSync(resolve(cwd, options.filepath), "utf-8");
+  }
 
   if (env.PRIVATE_KEY) {
     let privateKey = env.PRIVATE_KEY;
@@ -41,24 +44,23 @@ export function getPrivateKey(options: Options = {}): string | null {
   }
 
   if (env.PRIVATE_KEY_PATH) {
-    if (existsSync(env.PRIVATE_KEY_PATH)) {
-      return readFileSync(env.PRIVATE_KEY_PATH, "utf-8");
+    const filepath = resolve(cwd, env.PRIVATE_KEY_PATH);
+    if (existsSync(filepath)) {
+      return readFileSync(filepath, "utf-8");
     } else {
       throw new Error(
         `[@probot/get-private-key] Private key does not exists at path: "${env.PRIVATE_KEY_PATH}". Please check to ensure that "env.PRIVATE_KEY_PATH" is correct.`
       );
     }
   }
-  const pemFiles = readdirSync(process.cwd()).filter((path) =>
-    path.endsWith(".pem")
-  );
+  const pemFiles = readdirSync(cwd).filter((path) => path.endsWith(".pem"));
   if (pemFiles.length > 1) {
     const paths = pemFiles.join(", ");
     throw new Error(
       `[@probot/get-private-key] More than one file found: "${paths}". Set { filepath } option or set one of the environment variables: PRIVATE_KEY, PRIVATE_KEY_PATH`
     );
   } else if (pemFiles[0]) {
-    return getPrivateKey({ filepath: pemFiles[0] });
+    return getPrivateKey({ filepath: pemFiles[0], cwd });
   }
   return null;
 }
