@@ -1,5 +1,3 @@
-# WORK IN PROGRESS [#1](https://github.com/probot/get-private-key/pull/1)
-
 # @probot/get-private-key
 
 > Get private key from a path, environment variables, or a `*.pem` file in the current working directory
