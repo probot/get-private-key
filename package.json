@@ -12,7 +12,7 @@
     "pretest": "npm run -s lint",
     "test": "jest --coverage"
   },
-  "repository": "https://github.com/probot/get-private-key",
+  "repository": "github:probot/get-private-key",
   "keywords": [
     "github-app",
     "probot"
