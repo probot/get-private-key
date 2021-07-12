@@ -15,6 +15,9 @@ type Options = {
   cwd?: string;
 };
 
+const begin = "-----BEGIN RSA PRIVATE KEY-----";
+const end = "-----END RSA PRIVATE KEY-----";
+
 export function getPrivateKey(options: Options = {}): string | null {
   const env = options.env || process.env;
   const cwd = options.cwd || process.cwd();
@@ -31,11 +34,17 @@ export function getPrivateKey(options: Options = {}): string | null {
       privateKey = Buffer.from(privateKey, "base64").toString();
     }
 
-    const begin = "-----BEGIN RSA PRIVATE KEY-----";
-    const end = "-----END RSA PRIVATE KEY-----";
     if (privateKey.includes(begin) && privateKey.includes(end)) {
-      // Full key with new lines
-      return privateKey.replace(/\\n/g, "\n");
+      // newlines are escaped
+      if (privateKey.indexOf("\\n") !== -1) {
+        privateKey = privateKey.replace(/\\n/g, "\n");
+      }
+
+      // newlines are missing
+      if (privateKey.indexOf("\n") === -1) {
+        privateKey = addNewlines(privateKey);
+      }
+      return privateKey;
     }
 
     throw new Error(
@@ -63,6 +72,12 @@ export function getPrivateKey(options: Options = {}): string | null {
     return getPrivateKey({ filepath: pemFiles[0], cwd });
   }
   return null;
+}
+
+function addNewlines(privateKey: string): string {
+  const middleLength = privateKey.length - begin.length - end.length - 2;
+  const middle = privateKey.substr(begin.length + 1, middleLength);
+  return `${begin}\n${middle.replace(/\s/g, "\n")}\n${end}`;
 }
 
 getPrivateKey.VERSION = VERSION;
