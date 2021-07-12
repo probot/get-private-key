@@ -10,7 +10,13 @@ const readdirSync = fs.readdirSync as jest.Mock;
 const readFileSync = fs.readFileSync as jest.Mock;
 
 const PRIVATE_KEY =
-  "-----BEGIN RSA PRIVATE KEY-----\n ... \n-----END RSA PRIVATE KEY-----";
+  "-----BEGIN RSA PRIVATE KEY-----\n7HjkPK\nKLm395\nAIBII\n-----END RSA PRIVATE KEY-----";
+
+const PRIVATE_KEY_NO_NEWLINES =
+  "-----BEGIN RSA PRIVATE KEY----- 7HjkPK KLm395 AIBII -----END RSA PRIVATE KEY-----";
+
+const PRIVATE_KEY_ESCAPED_NEWLINES =
+  "-----BEGIN RSA PRIVATE KEY-----\\n7HjkPK\\nKLm395\\nAIBII\\n-----END RSA PRIVATE KEY-----";
 
 describe("getPrivateKey", () => {
   beforeEach(() => {
@@ -119,6 +125,18 @@ describe("getPrivateKey", () => {
       process.env.PRIVATE_KEY = Buffer.from(PRIVATE_KEY, "utf-8").toString(
         "base64"
       );
+      const result = getPrivateKey();
+      expect(result).toEqual(PRIVATE_KEY);
+    });
+
+    it("PRIVATE_KEY contains no newlines", () => {
+      process.env.PRIVATE_KEY = PRIVATE_KEY_NO_NEWLINES;
+      const result = getPrivateKey();
+      expect(result).toEqual(PRIVATE_KEY);
+    });
+
+    it("PRIVATE_KEY contains escaped newlines", () => {
+      process.env.PRIVATE_KEY = PRIVATE_KEY_ESCAPED_NEWLINES;
       const result = getPrivateKey();
       expect(result).toEqual(PRIVATE_KEY);
     });
