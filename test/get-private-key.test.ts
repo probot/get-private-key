@@ -15,6 +15,9 @@ const PRIVATE_KEY =
 const PRIVATE_KEY_NO_NEWLINES =
   "-----BEGIN RSA PRIVATE KEY----- 7HjkPK KLm395 AIBII -----END RSA PRIVATE KEY-----";
 
+const PRIVATE_KEY_NO_NEWLINES_MULTIPLE_SPACES =
+  "-----BEGIN RSA PRIVATE KEY----- 7HjkPK  KLm395 AIBII   -----END RSA PRIVATE KEY-----";
+
 const PRIVATE_KEY_ESCAPED_NEWLINES =
   "-----BEGIN RSA PRIVATE KEY-----\\n7HjkPK\\nKLm395\\nAIBII\\n-----END RSA PRIVATE KEY-----";
 
@@ -131,6 +134,12 @@ describe("getPrivateKey", () => {
 
     it("PRIVATE_KEY contains no newlines", () => {
       process.env.PRIVATE_KEY = PRIVATE_KEY_NO_NEWLINES;
+      const result = getPrivateKey();
+      expect(result).toEqual(PRIVATE_KEY);
+    });
+
+    it("PRIVATE_KEY contains consecutive spaces", () => {
+      process.env.PRIVATE_KEY = PRIVATE_KEY_NO_NEWLINES_MULTIPLE_SPACES;
       const result = getPrivateKey();
       expect(result).toEqual(PRIVATE_KEY);
     });
