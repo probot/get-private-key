@@ -77,7 +77,7 @@ export function getPrivateKey(options: Options = {}): string | null {
 function addNewlines(privateKey: string): string {
   const middleLength = privateKey.length - begin.length - end.length - 2;
   const middle = privateKey.substr(begin.length + 1, middleLength);
-  return `${begin}\n${middle.replace(/\s+/g, "\n")}\n${end}`;
+  return `${begin}\n${middle.trim().replace(/\s+/g, "\n")}\n${end}`;
 }
 
 getPrivateKey.VERSION = VERSION;
