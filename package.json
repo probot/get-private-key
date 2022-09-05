@@ -82,10 +82,5 @@
   "dependencies": {
     "@types/is-base64": "^1.1.0",
     "is-base64": "^1.1.0"
-  },
-  "renovate": {
-    "extends": [
-      "github>octokit/.github"
-    ]
   }
 }
