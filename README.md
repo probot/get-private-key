@@ -27,7 +27,7 @@ Browsers
 Node
 </th><td>
 
-Install with <code>npm install octokit-auth-probot</code>
+Install with <code>npm install @probot/get-private-key</code>
 
 ```js
 const { Probot } = require("probot");
