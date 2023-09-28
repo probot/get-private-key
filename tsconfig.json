@@ -1,9 +1,11 @@
 {
-  "extends": "@tsconfig/node12/tsconfig.json",
-  "include": ["src/**/*"],
+  "extends": "@octokit/tsconfig",
   "compilerOptions": {
-    "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
-  }
+    "esModuleInterop": true,
+    "declaration": true,
+    "outDir": "pkg/dist-types",
+    "emitDeclarationOnly": true,
+    "sourceMap": true
+  },
+  "include": ["src/**/*"]
 }
