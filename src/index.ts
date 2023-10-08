@@ -1,8 +1,6 @@
 import { resolve } from "path";
 import { existsSync, readdirSync, readFileSync } from "fs";
 
-import isBase64 from "is-base64";
-
 import { VERSION } from "./version";
 
 type Options = {
@@ -72,6 +70,10 @@ export function getPrivateKey(options: Options = {}): string | null {
     return getPrivateKey({ filepath: pemFiles[0], cwd });
   }
   return null;
+}
+
+function isBase64(str: string): boolean {
+  return Buffer.from(str, "base64").toString("base64") === str;
 }
 
 function addNewlines(privateKey: string): string {
