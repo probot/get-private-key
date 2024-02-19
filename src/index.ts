@@ -13,8 +13,19 @@ type Options = {
   cwd?: string;
 };
 
-const begin = "-----BEGIN RSA PRIVATE KEY-----";
-const end = "-----END RSA PRIVATE KEY-----";
+const beginPKCS1 = "-----BEGIN RSA PRIVATE KEY-----";
+const endPKCS1 = "-----END RSA PRIVATE KEY-----";
+
+const beginPKCS8 = "-----BEGIN PRIVATE KEY-----";
+const endPKCS8 = "-----END PRIVATE KEY-----";
+
+function isPkcs1(privateKey: string): boolean {
+  return privateKey.includes(beginPKCS1) && privateKey.includes(endPKCS1);
+}
+
+function isPkcs8(privateKey: string): boolean {
+  return privateKey.includes(beginPKCS8) && privateKey.includes(endPKCS8);
+}
 
 export function getPrivateKey(options: Options = {}): string | null {
   const env = options.env || process.env;
@@ -32,7 +43,7 @@ export function getPrivateKey(options: Options = {}): string | null {
       privateKey = Buffer.from(privateKey, "base64").toString();
     }
 
-    if (privateKey.includes(begin) && privateKey.includes(end)) {
+    if (isPkcs1(privateKey) || isPkcs8(privateKey)) {
       // newlines are escaped
       if (privateKey.indexOf("\\n") !== -1) {
         privateKey = privateKey.replace(/\\n/g, "\n");
@@ -40,7 +51,11 @@ export function getPrivateKey(options: Options = {}): string | null {
 
       // newlines are missing
       if (privateKey.indexOf("\n") === -1) {
-        privateKey = addNewlines(privateKey);
+        privateKey = addNewlines({
+          privateKey,
+          begin: isPkcs1(privateKey) ? beginPKCS1 : beginPKCS8,
+          end: isPkcs1(privateKey) ? endPKCS1 : endPKCS8,
+        });
       }
       return privateKey;
     }
@@ -76,7 +91,15 @@ function isBase64(str: string): boolean {
   return Buffer.from(str, "base64").toString("base64") === str;
 }
 
-function addNewlines(privateKey: string): string {
+function addNewlines({
+  privateKey,
+  begin,
+  end,
+}: {
+  privateKey: string;
+  begin: string;
+  end: string;
+}): string {
   const middleLength = privateKey.length - begin.length - end.length - 2;
   const middle = privateKey.substr(begin.length + 1, middleLength);
   return `${begin}\n${middle.trim().replace(/\s+/g, "\n")}\n${end}`;
