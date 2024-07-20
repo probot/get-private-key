@@ -30,8 +30,8 @@ Node
 Install with <code>npm install @probot/get-private-key</code>
 
 ```js
-const { Probot } = require("probot");
-const { getPrivateKey } = require("@probot/get-private-key");
+import { Probot } from "probot";
+import { getPrivateKey } from "@probot/get-private-key";
 ```
 
 </td></tr>
