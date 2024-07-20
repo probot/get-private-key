@@ -1,7 +1,7 @@
 import { resolve } from "path";
 import { existsSync, readdirSync, readFileSync } from "fs";
 
-import { VERSION } from "./version";
+import { VERSION } from "./version.js";
 
 type Options = {
   filepath?: string;
@@ -46,7 +46,7 @@ export function getPrivateKey(options: Options = {}): string | null {
     }
 
     throw new Error(
-      `[@probot/get-private-key] The contents of "env.PRIVATE_KEY" could not be validated. Please check to ensure you have copied the contents of the .pem file correctly.`
+      `[@probot/get-private-key] The contents of "env.PRIVATE_KEY" could not be validated. Please check to ensure you have copied the contents of the .pem file correctly.`,
     );
   }
 
@@ -56,7 +56,7 @@ export function getPrivateKey(options: Options = {}): string | null {
       return readFileSync(filepath, "utf-8");
     } else {
       throw new Error(
-        `[@probot/get-private-key] Private key does not exists at path: "${env.PRIVATE_KEY_PATH}". Please check to ensure that "env.PRIVATE_KEY_PATH" is correct.`
+        `[@probot/get-private-key] Private key does not exists at path: "${env.PRIVATE_KEY_PATH}". Please check to ensure that "env.PRIVATE_KEY_PATH" is correct.`,
       );
     }
   }
@@ -64,7 +64,7 @@ export function getPrivateKey(options: Options = {}): string | null {
   if (pemFiles.length > 1) {
     const paths = pemFiles.join(", ");
     throw new Error(
-      `[@probot/get-private-key] More than one file found: "${paths}". Set { filepath } option or set one of the environment variables: PRIVATE_KEY, PRIVATE_KEY_PATH`
+      `[@probot/get-private-key] More than one file found: "${paths}". Set { filepath } option or set one of the environment variables: PRIVATE_KEY, PRIVATE_KEY_PATH`,
     );
   } else if (pemFiles[0]) {
     return getPrivateKey({ filepath: pemFiles[0], cwd });

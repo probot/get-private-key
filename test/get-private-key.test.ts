@@ -1,13 +1,14 @@
-jest.mock("fs");
+import { beforeEach, describe, it, expect, vi, Mock } from "vitest";
+vi.mock("fs");
 
 import { resolve } from "path";
 import fs from "fs";
 
 import { getPrivateKey } from "../src";
 
-const existsSync = fs.existsSync as jest.Mock;
-const readdirSync = fs.readdirSync as jest.Mock;
-const readFileSync = fs.readFileSync as jest.Mock;
+const existsSync = fs.existsSync as Mock;
+const readdirSync = fs.readdirSync as Mock;
+const readFileSync = fs.readFileSync as Mock;
 
 const PRIVATE_KEY =
   "-----BEGIN RSA PRIVATE KEY-----\n7HjkPK\nKLm395\nAIBII\n-----END RSA PRIVATE KEY-----";
@@ -23,7 +24,7 @@ const PRIVATE_KEY_ESCAPED_NEWLINES =
 
 describe("getPrivateKey", () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
 
     existsSync.mockReturnValue(true);
     readdirSync.mockReturnValue([]);
@@ -44,7 +45,7 @@ describe("getPrivateKey", () => {
       expect(readFileSync).toHaveBeenCalledTimes(1);
       expect(readFileSync).toHaveBeenCalledWith(
         resolve(process.cwd(), "test.pem"),
-        "utf-8"
+        "utf-8",
       );
       expect(result).toEqual("test.pem content");
     });
@@ -66,13 +67,13 @@ describe("getPrivateKey", () => {
       });
       expect(existsSync).toHaveBeenCalledTimes(1);
       expect(existsSync).toHaveBeenCalledWith(
-        resolve(process.cwd(), "test.pem")
+        resolve(process.cwd(), "test.pem"),
       );
 
       expect(readFileSync).toHaveBeenCalledTimes(1);
       expect(readFileSync).toHaveBeenCalledWith(
         resolve(process.cwd(), "test.pem"),
-        "utf-8"
+        "utf-8",
       );
       expect(result).toEqual("test.pem content");
     });
@@ -85,7 +86,7 @@ describe("getPrivateKey", () => {
       expect(readFileSync).toHaveBeenCalledTimes(1);
       expect(readFileSync).toHaveBeenCalledWith(
         resolve(process.cwd(), "test.pem"),
-        "utf-8"
+        "utf-8",
       );
       expect(result).toEqual("test.pem content");
     });
@@ -96,7 +97,7 @@ describe("getPrivateKey", () => {
       expect(readFileSync).toHaveBeenCalledTimes(1);
       expect(readFileSync).toHaveBeenCalledWith(
         resolve(process.cwd(), "test.pem"),
-        "utf-8"
+        "utf-8",
       );
       expect(result).toEqual("test.pem content");
     });
@@ -104,7 +105,7 @@ describe("getPrivateKey", () => {
     it("two *.pem files in current working directory", () => {
       readdirSync.mockReturnValue(["test1.pem", "test2.pem"]);
       expect(() => getPrivateKey()).toThrow(
-        `[@probot/get-private-key] More than one file found: \"test1.pem, test2.pem\". Set { filepath } option or set one of the environment variables: PRIVATE_KEY, PRIVATE_KEY_PATH`
+        `[@probot/get-private-key] More than one file found: \"test1.pem, test2.pem\". Set { filepath } option or set one of the environment variables: PRIVATE_KEY, PRIVATE_KEY_PATH`,
       );
     });
 
@@ -126,7 +127,7 @@ describe("getPrivateKey", () => {
 
     it("PRIVATE_KEY is base64 encoded", () => {
       process.env.PRIVATE_KEY = Buffer.from(PRIVATE_KEY, "utf-8").toString(
-        "base64"
+        "base64",
       );
       const result = getPrivateKey();
       expect(result).toEqual(PRIVATE_KEY);
@@ -153,7 +154,7 @@ describe("getPrivateKey", () => {
     it("PRIVATE_KEY invalid", () => {
       process.env.PRIVATE_KEY = "invalid";
       expect(() => getPrivateKey()).toThrow(
-        `[@probot/get-private-key] The contents of "env.PRIVATE_KEY" could not be validated. Please check to ensure you have copied the contents of the .pem file correctly.`
+        `[@probot/get-private-key] The contents of "env.PRIVATE_KEY" could not be validated. Please check to ensure you have copied the contents of the .pem file correctly.`,
       );
     });
 
@@ -162,13 +163,13 @@ describe("getPrivateKey", () => {
       const result = getPrivateKey();
       expect(existsSync).toHaveBeenCalledTimes(1);
       expect(existsSync).toHaveBeenCalledWith(
-        resolve(process.cwd(), "test.pem")
+        resolve(process.cwd(), "test.pem"),
       );
 
       expect(readFileSync).toHaveBeenCalledTimes(1);
       expect(readFileSync).toHaveBeenCalledWith(
         resolve(process.cwd(), "test.pem"),
-        "utf-8"
+        "utf-8",
       );
       expect(result).toEqual("test.pem content");
     });
@@ -177,7 +178,7 @@ describe("getPrivateKey", () => {
       process.env.PRIVATE_KEY_PATH = "test.pem";
       existsSync.mockReturnValue(false);
       expect(() => getPrivateKey()).toThrow(
-        `[@probot/get-private-key] Private key does not exists at path: "test.pem". Please check to ensure that "env.PRIVATE_KEY_PATH" is correct.`
+        `[@probot/get-private-key] Private key does not exists at path: "test.pem". Please check to ensure that "env.PRIVATE_KEY_PATH" is correct.`,
       );
     });
 

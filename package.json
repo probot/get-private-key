@@ -6,12 +6,13 @@
   "version": "0.0.0-development",
   "description": "Get private key from a path, environment variables, or a `*.pem` file in the current working directory",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs && tsc -p tsconfig.json",
     "lint": "prettier --check '{src,test}/**/*.{ts,md}' *.md *.json",
     "lint:fix": "prettier --write '{src,test}/**/*.{ts,md}' *.md *.json",
     "pretest": "npm run -s lint",
-    "test": "jest --coverage"
+    "test": "vitest run --coverage"
   },
   "repository": "github:probot/get-private-key",
   "keywords": [
@@ -21,35 +22,14 @@
   "author": "Gregor Martynus (https://twitter.com/gr2m)",
   "license": "ISC",
   "devDependencies": {
-    "@octokit/tsconfig": "^2.0.0",
-    "@types/jest": "^29.0.0",
-    "esbuild": "^0.19.4",
-    "glob": "^10.3.10",
-    "jest": "^29.0.0",
-    "prettier": "^2.1.2",
-    "semantic-release": "^22.0.5",
+    "@octokit/tsconfig": "^3.0.0",
+    "@vitest/coverage-v8": "^2.0.3",
+    "esbuild": "^0.23.0",
+    "prettier": "^3.3.3",
+    "semantic-release": "^24.0.0",
     "semantic-release-plugin-update-version-in-files": "^1.0.0",
-    "ts-jest": "^29.0.0",
-    "typescript": "^5.0.0"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.(ts|tsx)$": [
-        "ts-jest",
-        {
-          "tsconfig": "test/tsconfig.test.json"
-        }
-      ]
-    },
-    "testEnvironment": "node",
-    "coverageThreshold": {
-      "global": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      }
-    }
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.3"
   },
   "release": {
     "branches": [
