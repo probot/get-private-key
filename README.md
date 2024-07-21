@@ -12,6 +12,8 @@ Finds a private key through various user-(un)specified methods. Order of precede
 3. `PRIVATE_KEY_PATH` environment variable or explicit `env.PRIVATE_KEY_PATH` option
 4. Any file w/ `.pem` extension in current working dir
 
+Supports both PKCS1 (i.e `-----BEGIN RSA PRIVATE KEY-----`) and PKCS8 (i.e `-----BEGIN PRIVATE KEY-----`).
+
 ## Usage
 
 <table>
