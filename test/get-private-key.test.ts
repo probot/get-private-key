@@ -1,9 +1,8 @@
 import { beforeEach, describe, it, expect, vi } from "vitest";
-vi.mock("fs");
+vi.mock("node:fs");
 
-import { resolve } from "path";
-import fs from "fs";
-
+import { resolve } from "node:path";
+import fs from "node:fs";
 import { getPrivateKey } from "../src/index.js";
 
 const existsSync = fs.existsSync as vi.Mock;
