@@ -59,6 +59,7 @@ async function main() {
           ".": {
             types: "./dist-types/index.d.ts",
             import: "./dist-bundle/index.js",
+            default: "./dist-src/index.js"
           },
         },
         sideEffects: false,
