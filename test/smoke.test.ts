@@ -1,4 +1,5 @@
-import { getPrivateKey } from "../src";
+import { describe, it, expect } from "vitest";
+import { getPrivateKey } from "../src/index.ts";
 
 describe("Smoke test", () => {
   it("is a function", () => {

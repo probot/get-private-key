@@ -1,7 +1,6 @@
 // @ts-check
 import esbuild from "esbuild";
-import { copyFile, readFile, writeFile, rm } from "fs/promises";
-import { glob } from "glob";
+import { copyFile, readFile, writeFile, rm } from "node:fs/promises";
 
 /**
  * @type {esbuild.BuildOptions}
@@ -19,7 +18,7 @@ async function main() {
   await rm("pkg", { recursive: true, force: true });
   // Build the source code for a neutral platform as ESM
   await esbuild.build({
-    entryPoints: await glob(["./src/*.ts", "./src/**/*.ts"]),
+    entryPoints: ["./src/*.ts", "./src/**/*.ts"],
     outdir: "pkg/dist-src",
     bundle: false,
     platform: "neutral",
@@ -28,38 +27,16 @@ async function main() {
     sourcemap: false,
   });
 
-  // Remove the types file from the dist-src folder
-  const typeFiles = await glob([
-    "./pkg/dist-src/**/types.js.map",
-    "./pkg/dist-src/**/types.js",
-  ]);
-  for (const typeFile of typeFiles) {
-    await rm(typeFile);
-  }
-
   const entryPoints = ["./pkg/dist-src/index.js"];
 
-  await Promise.all([
-    // Build the a CJS Node.js bundle
-    esbuild.build({
-      entryPoints,
-      outdir: "pkg/dist-node",
-      bundle: true,
-      platform: "node",
-      target: "node14",
-      format: "cjs",
-      ...sharedOptions,
-    }),
-    // Build an ESM browser bundle
-    esbuild.build({
-      entryPoints,
-      outdir: "pkg/dist-web",
-      bundle: true,
-      platform: "browser",
-      format: "esm",
-      ...sharedOptions,
-    }),
-  ]);
+  await esbuild.build({
+    entryPoints,
+    outdir: "pkg/dist-bundle",
+    bundle: true,
+    platform: "neutral",
+    format: "esm",
+    ...sharedOptions,
+  });
 
   // Copy the README, LICENSE to the pkg folder
   await copyFile("LICENSE", "pkg/LICENSE");
@@ -78,10 +55,14 @@ async function main() {
       {
         ...pkg,
         files: ["dist-*/**", "bin/**"],
-        main: "dist-node/index.js",
-        module: "dist-web/index.js",
         types: "dist-types/index.d.ts",
-        source: "dist-src/index.js",
+        exports: {
+          ".": {
+            types: "./dist-types/index.d.ts",
+            import: "./dist-bundle/index.js",
+            default: "./dist-src/index.js"
+          },
+        },
         sideEffects: false,
       },
       null,
