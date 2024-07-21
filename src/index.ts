@@ -1,6 +1,5 @@
 import { resolve } from "path";
 import { existsSync, readdirSync, readFileSync } from "fs";
-
 import { VERSION } from "./version";
 
 type Options = {
@@ -13,18 +12,18 @@ type Options = {
   cwd?: string;
 };
 
-const beginPKCS1 = "-----BEGIN RSA PRIVATE KEY-----";
-const endPKCS1 = "-----END RSA PRIVATE KEY-----";
+const pkcs1Begin = "-----BEGIN RSA PRIVATE KEY-----";
+const pkcs1End = "-----END RSA PRIVATE KEY-----";
 
-const beginPKCS8 = "-----BEGIN PRIVATE KEY-----";
-const endPKCS8 = "-----END PRIVATE KEY-----";
+const pkcs8Begin = "-----BEGIN PRIVATE KEY-----";
+const pkcs8End = "-----END PRIVATE KEY-----";
 
-function isPkcs1(privateKey: string): boolean {
-  return privateKey.includes(beginPKCS1) && privateKey.includes(endPKCS1);
+function isPKCS1(privateKey: string): boolean {
+  return privateKey.includes(pkcs1Begin) && privateKey.includes(pkcs1End);
 }
 
-function isPkcs8(privateKey: string): boolean {
-  return privateKey.includes(beginPKCS8) && privateKey.includes(endPKCS8);
+function isPKCS8(privateKey: string): boolean {
+  return privateKey.includes(pkcs8Begin) && privateKey.includes(pkcs8End);
 }
 
 export function getPrivateKey(options: Options = {}): string | null {
@@ -43,18 +42,30 @@ export function getPrivateKey(options: Options = {}): string | null {
       privateKey = Buffer.from(privateKey, "base64").toString();
     }
 
-    if (isPkcs1(privateKey) || isPkcs8(privateKey)) {
-      // newlines are escaped
-      if (privateKey.indexOf("\\n") !== -1) {
-        privateKey = privateKey.replace(/\\n/g, "\n");
-      }
+    // newlines are potentially escaped
+    if (privateKey.indexOf("\\n") !== -1) {
+      privateKey = privateKey.replace(/\\n/g, "\n");
+    }
 
+    if (isPKCS1(privateKey)) {
       // newlines are missing
       if (privateKey.indexOf("\n") === -1) {
         privateKey = addNewlines({
           privateKey,
-          begin: isPkcs1(privateKey) ? beginPKCS1 : beginPKCS8,
-          end: isPkcs1(privateKey) ? endPKCS1 : endPKCS8,
+          begin: pkcs1Begin,
+          end: pkcs1End,
+        });
+      }
+      return privateKey;
+    }
+
+    if (isPKCS8(privateKey)) {
+      // newlines are missing
+      if (privateKey.indexOf("\n") === -1) {
+        privateKey = addNewlines({
+          privateKey,
+          begin: pkcs8Begin,
+          end: pkcs8End,
         });
       }
       return privateKey;
