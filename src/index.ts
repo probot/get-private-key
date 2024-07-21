@@ -1,5 +1,5 @@
-import { resolve } from "path";
-import { existsSync, readdirSync, readFileSync } from "fs";
+import { resolve } from "node:path";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 
 import { VERSION } from "./version.js";
 

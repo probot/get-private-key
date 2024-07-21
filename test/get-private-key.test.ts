@@ -4,7 +4,7 @@ vi.mock("fs");
 import { resolve } from "path";
 import fs from "fs";
 
-import { getPrivateKey } from "../src";
+import { getPrivateKey } from "../src/index.ts";
 
 const existsSync = fs.existsSync as Mock;
 const readdirSync = fs.readdirSync as Mock;
