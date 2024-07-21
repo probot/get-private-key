@@ -1,13 +1,13 @@
-import { beforeEach, describe, it, expect, vi } from "vitest";
+import { beforeEach, describe, it, expect, vi, type Mock } from "vitest";
 vi.mock("node:fs");
 
 import { resolve } from "node:path";
 import fs from "node:fs";
 import { getPrivateKey } from "../src/index.js";
 
-const existsSync = fs.existsSync as vi.Mock;
-const readdirSync = fs.readdirSync as vi.Mock;
-const readFileSync = fs.readFileSync as vi.Mock;
+const existsSync = fs.existsSync as Mock;
+const readdirSync = fs.readdirSync as Mock;
+const readFileSync = fs.readFileSync as Mock;
 
 const PRIVATE_KEY_PKCS1 =
   "-----BEGIN RSA PRIVATE KEY-----\n7HjkPK\nKLm395\nAIBII\n-----END RSA PRIVATE KEY-----";
