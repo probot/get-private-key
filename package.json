@@ -31,6 +31,9 @@
     "typescript": "^5.0.0",
     "vitest": "^2.0.3"
   },
+  "engines": {
+    "node": ">= 18"
+  },
   "release": {
     "branches": [
       "+([0-9]).x",
