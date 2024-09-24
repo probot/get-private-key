@@ -22,7 +22,7 @@
   "author": "Gregor Martynus (https://twitter.com/gr2m)",
   "license": "ISC",
   "devDependencies": {
-    "@octokit/tsconfig": "^3.0.0",
+    "@octokit/tsconfig": "^4.0.0",
     "@vitest/coverage-v8": "^2.0.3",
     "esbuild": "^0.23.0",
     "prettier": "^3.3.3",
