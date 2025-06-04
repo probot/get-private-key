@@ -3,6 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "type": "script",
   "version": "0.0.0-development",
   "description": "Get private key from a path, environment variables, or a `*.pem` file in the current working directory",
   "main": "index.js",
