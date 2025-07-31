@@ -3,13 +3,13 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { VERSION } from "./version.js";
 
 type Options = {
-  filepath?: string;
+  filepath?: string | undefined;
   env?: {
-    PRIVATE_KEY?: string;
-    PRIVATE_KEY_PATH?: string;
+    PRIVATE_KEY?: string | undefined;
+    PRIVATE_KEY_PATH?: string | undefined;
     [key: string]: string | undefined;
   };
-  cwd?: string;
+  cwd?: string | undefined;
 };
 
 const pkcs1Begin = "-----BEGIN RSA PRIVATE KEY-----";
