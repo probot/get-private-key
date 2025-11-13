@@ -34,6 +34,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: npm
-          node-version: 18
+          node-version: 24
       - run: npm ci
       - run: npm run lint
